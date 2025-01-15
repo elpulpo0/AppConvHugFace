@@ -28,7 +28,7 @@ def get_response_from_api(message: str) -> str:
 
 if __name__ == "__main__":
     # Exemple d'utilisation
-    message = "Can you please intriduce yourself?"
+    message = "Can you please introduce yourself?"
     response = get_response_from_api(message)
 
     print(f"Message utilisateur : {message}")
