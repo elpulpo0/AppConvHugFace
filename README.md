@@ -60,5 +60,80 @@ Jour 3 :
 
 ## Exécution
 
+--- Chris ---
+
 - Rename .env_example to .env and add your Llama Token
 - Run the API : `uvicorn components.models.chatbot.api:app --host 127.0.0.1 --port 8000`
+
+--- Mathieu ---
+
+### **Fonctionnalité de Traduction**
+Cette partie de l'application gère la traduction des messages de **français** vers **anglais** en utilisant le modèle pré-entraîné **Helsinki-NLP/opus-mt-fr-en** de Hugging Face.
+
+#### **Description**
+- Le fichier `translate.py` implémente une fonction permettant de traduire un texte du français vers l'anglais.
+- Utilise les bibliothèques suivantes :
+  - **transformers** : pour le modèle et le tokenizer.
+  - **torch** : pour l'exécution des modèles.
+  - **sentencepiece** : requis par le tokenizer.
+
+---
+
+#### **Structure du Code**
+- **load_translation_model()** :
+  - Charge le modèle et le tokenizer nécessaires pour la traduction.
+  - Modèle utilisé : `Helsinki-NLP/opus-mt-fr-en`.
+
+- **translate_text(text, tokenizer, model)** :
+  - Prend un texte en entrée et retourne le texte traduit.
+  - Utilise les étapes suivantes :
+    1. Tokenisation du texte en entrée.
+    2. Génération de la traduction.
+    3. Décodage de la traduction.
+
+---
+
+#### **Exemple d'utilisation**
+1. Charger le modèle et le tokenizer :
+   ```python
+   from translate import load_translation_model, translate_text
+
+   tokenizer, model = load_translation_model()
+   ```
+2. Traduire un texte :
+   ```python
+   french_text = "Bonjour, comment ça va ?"
+   translated_text = translate_text(french_text, tokenizer, model)
+   print(f"Texte original : {french_text}")
+   print(f"Texte traduit : {translated_text}")
+   ```
+
+---
+
+#### **Dépendances**
+Assurez-vous d'installer les dépendances suivantes avant d'exécuter le script :
+```bash
+pip install transformers torch sentencepiece
+```
+
+---
+
+#### **Tests Unitaires**
+Des tests unitaires sont en cours de développement pour valider la robustesse de la fonctionnalité de traduction. Ils sont situés dans le dossier `tests/`.
+
+Exemple de test unitaire (fichier `test_translate.py`) :
+```python
+from translate import load_translation_model, translate_text
+
+def test_translate_simple():
+    tokenizer, model = load_translation_model()
+    assert translate_text("Bonjour", tokenizer, model) == "Hello"
+```
+
+---
+
+#### **Emplacement**
+Le fichier de traduction est situé dans :
+```
+components/models/translate/translate.py
+```
