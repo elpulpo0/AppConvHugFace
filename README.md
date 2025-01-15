@@ -60,4 +60,5 @@ Jour 3 :
 
 ## Exécution
 
-SOON
+- Rename .env_example to .env and add your Llama Token
+- Run the API : `uvicorn components.models.chatbot.api:app --host 127.0.0.1 --port 8000`

@@ -17,3 +17,5 @@ __pycache__/
 .idea/
 
 # Données générées
+.env
+run_api.bash
