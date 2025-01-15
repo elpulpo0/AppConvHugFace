@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 # Charger les variables d'environnement depuis le fichier .env
 load_dotenv()
-HF_AUTH_TOKEN = os.getenv("HF_AUTH_TOKEN")
+TOKEN_LLAMA = os.getenv("TOKEN_LLAMA")
 
 # Définir une application FastAPI
 app = FastAPI()
@@ -21,11 +21,11 @@ model_id = "meta-llama/Llama-3.2-3B-Instruct"
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # Charger le tokenizer et le modèle
-tokenizer = AutoTokenizer.from_pretrained(model_id, use_auth_token=HF_AUTH_TOKEN)
+tokenizer = AutoTokenizer.from_pretrained(model_id, use_auth_token=TOKEN_LLAMA)
 model = AutoModelForCausalLM.from_pretrained(
     model_id,
     torch_dtype=torch.bfloat16,
-    use_auth_token=HF_AUTH_TOKEN
+    use_auth_token=TOKEN_LLAMA
 )
 
 # Initialiser le pipeline avec le modèle et le tokenizer
