@@ -1,6 +1,11 @@
-import pytest
+import sys
+import os
 from fastapi.testclient import TestClient
-from components.models.chatbot.api import app  # Assurez-vous que l'import correspond à votre fichier
+
+# Ajouter dynamiquement la racine du projet au chemin de recherche
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
+
+from components.models.chatbot.api import app
 
 client = TestClient(app)
 
