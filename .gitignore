@@ -17,4 +17,10 @@ __pycache__/
 .vscode/
 .idea/
 
-# Données générées
+# Fichiers et dossier ignoré
+/interfaces/gradio/
+run_sentiment_analysis.py
+test_bloom.py
+test_chatbot.py
+test_llama.py
+/.gradio

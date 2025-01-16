@@ -65,10 +65,10 @@ SOON
 --- Mathieu ---
 
 ### **Fonctionnalité de Traduction**
-Cette partie de l'application gère la traduction des messages de **français** vers **anglais** en utilisant le modèle pré-entraîné **Helsinki-NLP/opus-mt-fr-en** de Hugging Face.
+Cette partie de l'application gère la traduction des messages de **anglais** vers **français** en utilisant le modèle pré-entraîné **Helsinki-NLP/opus-mt-en-fr** de Hugging Face.
 
 #### **Description**
-- Le fichier `translate.py` implémente une fonction permettant de traduire un texte du français vers l'anglais.
+- Le fichier `translate.py` implémente une fonction permettant de traduire un texte de l'anglais vers le français.
 - Utilise les bibliothèques suivantes :
   - **transformers** : pour le modèle et le tokenizer.
   - **torch** : pour l'exécution des modèles.
@@ -79,7 +79,7 @@ Cette partie de l'application gère la traduction des messages de **français** 
 #### **Structure du Code**
 - **load_translation_model()** :
   - Charge le modèle et le tokenizer nécessaires pour la traduction.
-  - Modèle utilisé : `Helsinki-NLP/opus-mt-fr-en`.
+  - Modèle utilisé : `Helsinki-NLP/opus-mt-en-fr`.
 
 - **translate_text(text, tokenizer, model)** :
   - Prend un texte en entrée et retourne le texte traduit.
@@ -99,9 +99,9 @@ Cette partie de l'application gère la traduction des messages de **français** 
    ```
 2. Traduire un texte :
    ```python
-   french_text = "Bonjour, comment ça va ?"
-   translated_text = translate_text(french_text, tokenizer, model)
-   print(f"Texte original : {french_text}")
+   english_text = "Hello, how are you?"
+   translated_text = translate_text(english_text, tokenizer, model)
+   print(f"Texte original : {english_text}")
    print(f"Texte traduit : {translated_text}")
    ```
 
