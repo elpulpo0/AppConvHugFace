@@ -18,14 +18,21 @@ class MessageRequest(BaseModel):
 # Charger le modèle au démarrage de l'application
 print("Chargement du modèle...")
 model_id = "meta-llama/Llama-3.2-3B-Instruct"
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+# Détection de l'appareil disponible (MPS, CUDA, ou CPU)
+if torch.backends.mps.is_available():
+    device = 'mps'
+elif torch.cuda.is_available():
+    device = 'cuda'
+else:
+    device = 'cpu'
 
 # Charger le tokenizer et le modèle
-tokenizer = AutoTokenizer.from_pretrained(model_id, use_auth_token=TOKEN_LLAMA)
+tokenizer = AutoTokenizer.from_pretrained(model_id, token=TOKEN_LLAMA)
 model = AutoModelForCausalLM.from_pretrained(
     model_id,
     torch_dtype=torch.bfloat16,
-    use_auth_token=TOKEN_LLAMA
+    token=TOKEN_LLAMA
 )
 
 # Initialiser le pipeline avec le modèle et le tokenizer
