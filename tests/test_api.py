@@ -32,6 +32,7 @@ def test_generate_response():
     # Vérifier que la réponse n'est pas vide
     assert len(response_json["response"]) > 0
 
+@pytest.mark.requires_model
 def test_generate_response_invalid_data():
     """
     Teste l'API avec des données invalides.
