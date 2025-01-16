@@ -1,7 +1,8 @@
 import sys
 import os
-from unittest.mock import patch
+import pytest
 from fastapi.testclient import TestClient
+from unittest.mock import patch
 
 # Ajouter dynamiquement la racine du projet au chemin de recherche
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
@@ -10,16 +11,11 @@ from components.models.chatbot.api import app
 
 client = TestClient(app)
 
-@patch("components.models.chatbot.api.AutoTokenizer.from_pretrained")
-@patch("components.models.chatbot.api.AutoModelForCausalLM.from_pretrained")
-def test_generate_response(mock_model, mock_tokenizer):
+@pytest.mark.requires_model
+def test_generate_response():
     """
     Teste l'API pour vérifier que la réponse générée par le modèle est correcte.
     """
-    # Configurer le mock pour qu'il retourne un objet factice
-    mock_tokenizer.return_value = "mocked_tokenizer"
-    mock_model.return_value.generate.return_value = ["Mocked response"]
-
     message = "Bonjour, peux-tu te présenter ?"
     payload = {"message": message}
 
@@ -35,7 +31,6 @@ def test_generate_response(mock_model, mock_tokenizer):
 
     # Vérifier que la réponse n'est pas vide
     assert len(response_json["response"]) > 0
-    assert response_json["response"] == "Mocked response"
 
 def test_generate_response_invalid_data():
     """
