@@ -1,6 +1,6 @@
 import gradio as gr
 from components.models.chatbot.chatbot import generate_chatbot_response
-from components.models.sentiment_analysis.sentiment_analysis import analyze_sentiment
+# from components.models.sentiment_analysis.sentiment_analysis import analyze_sentiment
 from components.models.translate.translate import translate_text_to_en
 
 # ============================
@@ -18,8 +18,8 @@ def conversation_pipeline(user_input, history):
     bot_msg_en = translate_text_to_en(bot_msg)
 
     # 4) Analyser le sentiment des deux messages
-    user_sentiment = analyze_sentiment(user_msg)
-    bot_sentiment = analyze_sentiment(bot_msg)
+    # user_sentiment = analyze_sentiment(user_msg)
+    # bot_sentiment = analyze_sentiment(bot_msg)
 
     # 5) Mise en forme des informations pour l'historique
     #    On stocke un tuple (user_side, bot_side) où :
@@ -29,12 +29,12 @@ def conversation_pipeline(user_input, history):
     user_side = {
         "original": user_msg,
         "english": user_msg_en,
-        "sentiment": user_sentiment
+        # "sentiment": user_sentiment
     }
     bot_side = {
         "original": bot_msg,
         "english": bot_msg_en,
-        "sentiment": bot_sentiment
+        # "sentiment": bot_sentiment
     }
 
     # 6) On met à jour l'historique
