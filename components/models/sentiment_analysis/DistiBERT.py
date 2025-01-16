@@ -15,3 +15,4 @@ class DistiBERT :
         for text, result in zip(texts, results):
             print(f"Texte: {text}")
             print(f"Sentiment: {result['label']}, Score: {result['score']:.2f}\n")
+            return result['label']

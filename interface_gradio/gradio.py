@@ -23,7 +23,7 @@ def conversation_pipeline(user_input, history):
     result = analyzer_feel.analyze([user_msg_en])
     user_sentiment = analyzer_feel.result(results=result,texts=[user_msg])
     result = analyzer_feel.analyze([bot_msg_en])
-    bot_sentiment = analyzer_feel.result(text=[bot_msg],results=result)
+    bot_sentiment = analyzer_feel.result(texts=[bot_msg],results=result)
 
     # 5) Mise en forme des informations pour l'historique
     #    On stocke un tuple (user_side, bot_side) où :
