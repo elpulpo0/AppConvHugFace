@@ -70,8 +70,25 @@ Jour 3 :
 SOON
 
 
+### Analyse of feels
+
+The bot mush have a comprehension of the feeling of the user. For this there will be 2 way with one working right now.
+
+- [ ] **Dlsta :**
+  Analyse the feelings in the text with a a multiple labels possible by text. We can have a list of 28 labels possible but right now there is a little probleme with the detection of feelings. There the list :
+
+  - Amusement
+  - Admiration
+- [ ] **DistiBERT :**
+  Analyse the emotion of the message of everyone and say it's good or bad. There will be only 3 category possible :
+
+  - Positive
+  - Neutral
+  - Negative
+
 ## Annexes
 
 ### Database
 
-- Database of emotions from text :  [https://huggingface.co/datasets/google-research-datasets/go_emotions](https://huggingface.co/datasets/google-research-datasets/go_emotions "https://huggingface.co/datasets/google-research-datasets/go_emotions")
+- [Database of emotions from text]([https://huggingface.co/datasets/google-research-datasets/go_emotions](https://huggingface.co/datasets/google-research-datasets/go_emotions "https://huggingface.co/datasets/google-research-datasets/go_emotions")) ( en cours de programmation )
+- [Model DistiBERT](https://huggingface.co/lxyuan/distilbert-base-multilingual-cased-sentiments-student)
