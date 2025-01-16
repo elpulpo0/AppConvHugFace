@@ -1,12 +1,13 @@
 import gradio as gr
 from components.models.chatbot.chatbot import get_response_from_api
 from components.models.translate.translate import load_translation_model, translate_text
-# from components.models.sentiment_analysis.sentiment_analysis import analyze_sentiment
+from components.models.sentiment_analysis.DistiBERT import DistiBERT
 
 # ============================
 # = Partie "pipeline" Gradio =
 # ============================
 def conversation_pipeline(user_input, history):
+    analyzer_feel = DistiBERT()
     # 1) Récupération du dernier message utilisateur
     user_msg = user_input
 
@@ -19,8 +20,10 @@ def conversation_pipeline(user_input, history):
     bot_msg_en = translate_text(bot_msg, load_translate[0], load_translate[1])
 
     # # 4) Analyser le sentiment des deux messages
-    # user_sentiment = analyze_sentiment(user_msg)
-    # bot_sentiment = analyze_sentiment(bot_msg)
+    result = analyzer_feel.analyze([user_msg_en])
+    user_sentiment = analyzer_feel.result(results=result,texts=[user_msg])
+    result = analyzer_feel.analyze([bot_msg_en])
+    bot_sentiment = analyzer_feel.result(text=[bot_msg],results=result)
 
     # 5) Mise en forme des informations pour l'historique
     #    On stocke un tuple (user_side, bot_side) où :
@@ -30,12 +33,12 @@ def conversation_pipeline(user_input, history):
     user_side = {
         "original": user_msg,
         "french": user_msg_en,
-        # "sentiment": user_sentiment
+        "sentiment": user_sentiment
     }
     bot_side = {
         "original": bot_msg,
         "french": bot_msg_en,
-        # "sentiment": bot_sentiment
+        "sentiment": bot_sentiment
     }
 
     # 6) On met à jour l'historique
@@ -61,7 +64,7 @@ def format_conversation_display_as_messages(history):
         user_content = (
             f"{user_side['original']}\n\n"
             f"{user_side['french']}\n\n"
-            # f"Sentiment : {user_side['sentiment']}"
+            f"Sentiment : {user_side['sentiment']}"
         )
         messages.append({
             "role": "user",
@@ -72,7 +75,7 @@ def format_conversation_display_as_messages(history):
         bot_content = (
             f"{bot_side['original']}\n\n"
             f"{bot_side['french']}\n\n"
-            # f"Sentiment : {bot_side['sentiment']}"
+            f"Sentiment : {bot_side['sentiment']}"
         )
         messages.append({
             "role": "assistant",

@@ -80,9 +80,11 @@ Choose the version that suit your environment.
 --- Mathieu ---
 
 ### **Fonctionnalité de Traduction**
+
 Cette partie de l'application gère la traduction des messages de **anglais** vers **français** en utilisant le modèle pré-entraîné **Helsinki-NLP/opus-mt-en-fr** de Hugging Face.
 
 #### **Description**
+
 - Le fichier `translate.py` implémente une fonction permettant de traduire un texte de l'anglais vers le français.
 - Utilise les bibliothèques suivantes :
   - **transformers** : pour le modèle et le tokenizer.
@@ -92,11 +94,14 @@ Cette partie de l'application gère la traduction des messages de **anglais** ve
 ---
 
 #### **Structure du Code**
+
 - **load_translation_model()** :
+
   - Charge le modèle et le tokenizer nécessaires pour la traduction.
   - Modèle utilisé : `Helsinki-NLP/opus-mt-en-fr`.
 
 - **translate_text(text, tokenizer, model)** :
+
   - Prend un texte en entrée et retourne le texte traduit.
   - Utilise les étapes suivantes :
     1. Tokenisation du texte en entrée.
@@ -106,12 +111,15 @@ Cette partie de l'application gère la traduction des messages de **anglais** ve
 ---
 
 #### **Exemple d'utilisation**
+
 1. Charger le modèle et le tokenizer :
+
    ```python
    from translate import load_translation_model, translate_text
 
    tokenizer, model = load_translation_model()
    ```
+
 2. Traduire un texte :
    ```python
    english_text = "Hello, how are you?"
@@ -123,7 +131,9 @@ Cette partie de l'application gère la traduction des messages de **anglais** ve
 ---
 
 #### **Dépendances**
+
 Assurez-vous d'installer les dépendances suivantes avant d'exécuter le script :
+
 ```bash
 pip install transformers torch sentencepiece
 ```
@@ -131,9 +141,11 @@ pip install transformers torch sentencepiece
 ---
 
 #### **Tests Unitaires**
+
 Des tests unitaires sont en cours de développement pour valider la robustesse de la fonctionnalité de traduction. Ils sont situés dans le dossier `tests/`.
 
 Exemple de test unitaire (fichier `test_translate.py`) :
+
 ```python
 from translate import load_translation_model, translate_text
 
@@ -145,7 +157,9 @@ def test_translate_simple():
 ---
 
 #### **Emplacement**
+
 Le fichier de traduction est situé dans :
+
 ```
 components/models/translate/translate.py
 ```
@@ -153,41 +167,51 @@ components/models/translate/translate.py
 --- Chris ---
 
 ### **Fonctionnalité de chat**
+
 Cette partie de l'application gère la génération de réponse à un message en utilisant le modèle pré-entraîné **Llama-3.2-3B-Instruct** de Meta via Hugging Face.
 
 #### **Description**
+
 - Le fichier `api.py` distribue une API qui implémente une fonction sur la route "/generate_response" permettant de générer une réponse à un texte en anglais.
 - Utilise les bibliothèques suivantes :
+
   - **transformers** : pour le modèle et le tokenizer.
   - **torch** : pour l'exécution des modèles.
   - **fastapi** : pour l'API.
 
 - Le fichier `chatbot.py` distribue implémente une fonction qui fait appel à l'API avec un message pour lequel on attend une réponse.
 - Utilise la bibliothèques suivante :
+
   - **requests** : pour réaliser la requête à l'API.
 
 ---
 
 #### **Structure du Code**
-##### api.py
-  - Charge les variables d'environnement, le modèle et le tokenizer.
 
+##### api.py
+
+- Charge les variables d'environnement, le modèle et le tokenizer.
 - **generate_response** :
+
   - Prend un texte en entrée et génère une réponse.
 
 ##### chatbot.py
+
 - **get_response_from_api** :
   - Envoie un texte dans une requête API.
 
 ---
 
 #### **Exemple d'utilisation**
+
 1. Charger le modèle et le tokenizer :
+
    ```python
    from translate import load_translation_model, translate_text
 
    tokenizer, model = load_translation_model()
    ```
+
 2. Traduire un texte :
    ```python
    message = "Can you please intriduce yourself?"
@@ -197,9 +221,11 @@ Cette partie de l'application gère la génération de réponse à un message en
 ---
 
 #### **Tests Unitaires**
+
 Des tests unitaires sont en cours de développement pour valider la robustesse de la fonctionnalité de génération. Ils sont situés dans le dossier `tests/`.
 
 Exemple de test unitaire (fichier `test_chatbot.py`) :
+
 ```python
 from components.models.chatbot.api import app
 
@@ -214,7 +240,9 @@ def test_get_response_from_api()
 ---
 
 #### **Emplacement**
+
 Les fichiers `chatbot.py` et `api.py` sont situés dans :
+
 ```
 components/models/chatbot/
 ```
@@ -224,12 +252,13 @@ components/models/chatbot/
 The bot mush have a comprehension of the feeling of the user. For this there will be 2 way with one working right now.
 
 - [ ] **Dlsta :**
-  Analyse the feelings in the text with a a multiple labels possible by text. We can have a list of 28 labels possible but right now there is a little probleme with the detection of feelings. There the list :
+      Analyse the feelings in the text with a a multiple labels possible by text. We can have a list of 28 labels possible but right now there is a little probleme with the detection of feelings. There the list :
 
   - Amusement
   - Admiration
+
 - [ ] **DistiBERT :**
-  Analyse the emotion of the message of everyone and say it's good or bad. There will be only 3 category possible :
+      Analyse the emotion of the message of everyone and say it's good or bad. There will be only 3 category possible :
 
   - Positive
   - Neutral

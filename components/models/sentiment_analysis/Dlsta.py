@@ -15,7 +15,7 @@ class Dlsta:
     def train_model(self, sequences, y):
 
         x = pad_sequences(sequences, padding="post")
-        x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.99, random_state=42)
+        x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, random_state=42)
         print(len(x_train))
         
         x_train = np.array(x_train)
