@@ -15,7 +15,7 @@ class Dlsta:
     def train_model(self, sequences, y):
 
         x = pad_sequences(sequences, padding="post")
-        x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.9, random_state=42)
+        x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.99, random_state=42)
         print(len(x_train))
         
         x_train = np.array(x_train)
@@ -36,7 +36,7 @@ class Dlsta:
             metrics=["accuracy"]
         )
 
-        self.model.fit(x_train, y_train, epochs=10, batch_size=28)
+        self.model.fit(x_train, y_train, epochs=5, batch_size=28)
         self.model.summary()
         return x_test,y_test
 
