@@ -37,4 +37,9 @@ if __name__ == "__main__":
     translated_text = translate_text(english_text, tokenizer, model)
 
     print(f"Texte original : {english_text}")
+<<<<<<< HEAD
     print(f"Texte traduit : {translated_text}")
+=======
+    print(f"Texte traduit : {translated_text}")
+    
+>>>>>>> 9f18de233cdb9cf8c7ea74b489714f84e3488731

@@ -22,18 +22,18 @@ def clean_translation(text):
 
 def test_translate_simple():
     """
-    Test de traduction d'un mot simple (Bonjour -> Hello).
+    Test de traduction d'un mot simple (Hello -> Bonjour).
     """
-    french_text = "Bonjour"
-    expected_translation = "Hello"
-    actual_translation = clean_translation(translate_text(french_text, tokenizer, model))
+    english_text = "Hello"
+    expected_translation = "Bonjour"
+    actual_translation = clean_translation(translate_text(english_text, tokenizer, model))
     assert actual_translation == expected_translation, f"Expected: '{expected_translation}', but got: '{actual_translation}'"
     
 def test_translate_sentence():
     """
     Test de traduction d'une phrase complète.
     """
-    french_text = "Comment allez-vous ?"
-    expected_translation = "How are you?"
-    actual_translation = clean_translation(translate_text(french_text, tokenizer, model))
+    english_text = "How are you?"
+    expected_translation = "Comment allez-vous ?"
+    actual_translation = clean_translation(translate_text(english_text, tokenizer, model))
     assert actual_translation == expected_translation, f"Expected: '{expected_translation}', but got: '{actual_translation}'"

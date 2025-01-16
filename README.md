@@ -52,15 +52,23 @@ Jour 3 :
 - bash(windows)
 `source .venv/Scripts/activate`
 
-**Install the librairies**
+**Update pip**
 
 `python.exe -m pip install --upgrade pip`
+
+**Install Torch**
+
+Choose the version that suit your environment.
+
+**Install the other librairies**
 
 `pip install -r requirements.txt`
 
 ## Exécution
 
-SOON
+- Rename .env_example to .env and add your Llama Token
+- Run the API : `uvicorn components.models.chatbot.api:app --host 127.0.0.1 --port 8000`
+- Run the app : `python app.py`
 
 --- Mathieu ---
 
@@ -133,4 +141,73 @@ def test_translate_simple():
 Le fichier de traduction est situé dans :
 ```
 components/models/translate/translate.py
+```
+
+--- Chris ---
+
+### **Fonctionnalité de chat**
+Cette partie de l'application gère la génération de réponse à un message en utilisant le modèle pré-entraîné **Llama-3.2-3B-Instruct** de Meta via Hugging Face.
+
+#### **Description**
+- Le fichier `api.py` distribue une API qui implémente une fonction sur la route "/generate_response" permettant de générer une réponse à un texte en anglais.
+- Utilise les bibliothèques suivantes :
+  - **transformers** : pour le modèle et le tokenizer.
+  - **torch** : pour l'exécution des modèles.
+  - **fastapi** : pour l'API.
+
+- Le fichier `chatbot.py` distribue implémente une fonction qui fait appel à l'API avec un message pour lequel on attend une réponse.
+- Utilise la bibliothèques suivante :
+  - **requests** : pour réaliser la requête à l'API.
+
+---
+
+#### **Structure du Code**
+##### api.py
+  - Charge les variables d'environnement, le modèle et le tokenizer.
+
+- **generate_response** :
+  - Prend un texte en entrée et génère une réponse.
+
+##### chatbot.py
+- **get_response_from_api** :
+  - Envoie un texte dans une requête API.
+
+---
+
+#### **Exemple d'utilisation**
+1. Charger le modèle et le tokenizer :
+   ```python
+   from translate import load_translation_model, translate_text
+
+   tokenizer, model = load_translation_model()
+   ```
+2. Traduire un texte :
+   ```python
+   message = "Can you please intriduce yourself?"
+   response = get_response_from_api(message)
+   ```
+
+---
+
+#### **Tests Unitaires**
+Des tests unitaires sont en cours de développement pour valider la robustesse de la fonctionnalité de génération. Ils sont situés dans le dossier `tests/`.
+
+Exemple de test unitaire (fichier `test_chatbot.py`) :
+```python
+from components.models.chatbot.api import app
+
+def mock_requests_post():
+    return MockResponse({"message": json["message"], "response": "Je suis un chatbot sarcastique et drôle!"}, 200)
+def test_get_response_from_api()
+    response = get_response_from_api(message)
+    assert response == "Je suis un chatbot sarcastique et drôle!"
+
+```
+
+---
+
+#### **Emplacement**
+Les fichiers `chatbot.py` et `api.py` sont situés dans :
+```
+components/models/chatbot/
 ```

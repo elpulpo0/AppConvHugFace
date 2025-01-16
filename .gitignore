@@ -24,3 +24,6 @@ test_bloom.py
 test_chatbot.py
 test_llama.py
 /.gradio
+# Données générées
+.env
+run_api.bash
