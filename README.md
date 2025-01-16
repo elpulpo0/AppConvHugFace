@@ -192,11 +192,16 @@ Cette partie de l'application gère la génération de réponse à un message en
 #### **Tests Unitaires**
 Des tests unitaires sont en cours de développement pour valider la robustesse de la fonctionnalité de génération. Ils sont situés dans le dossier `tests/`.
 
-Exemple de test unitaire (fichier `test_api.py`) :
+Exemple de test unitaire (fichier `test_chatbot.py`) :
 ```python
 from components.models.chatbot.api import app
 
-def test_generate_response():
+def mock_requests_post():
+    return MockResponse({"message": json["message"], "response": "Je suis un chatbot sarcastique et drôle!"}, 200)
+def test_get_response_from_api()
+    response = get_response_from_api(message)
+    assert response == "Je suis un chatbot sarcastique et drôle!"
+
 ```
 
 ---
