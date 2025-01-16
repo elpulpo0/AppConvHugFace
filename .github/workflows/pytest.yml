@@ -27,6 +27,9 @@ jobs:
         pip install torch
         pip install -r requirements.txt
 
+    - name: Set environment variables
+      run: echo "LLAMA_TOKEN=${{ secrets.LLAMA_TOKEN }}" >> $GITHUB_ENV
+
     - name: Run tests with pytest
       env:
         PYTHONPATH: "${{ github.workspace }}"
