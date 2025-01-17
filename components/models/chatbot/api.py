@@ -51,19 +51,25 @@ def generate_response(request: MessageRequest):
     Endpoint pour générer une réponse en fonction du message utilisateur.
     """
     try:
-        # Créer un prompt pour le modèle
+        # Créer un prompt structuré pour LLaMA
         prompt = (
-            f"Respond to this message with a tone of annoyance but in a humorous way: {request.message}"
+            "<|begin_of_text|>"
+            "<|start_header_id|>system<|end_header_id|>"
+            "You are an AI assistant responding to messages in a tone of annoyance but with humor. Be concise and witty."
+            "<|eot_id|>"
+            "<|start_header_id|>user<|end_header_id|>"
+            f"{request.message}"
+            "<|eot_id|>"
+            "<|start_header_id|>assistant<|end_header_id|>"
         )
 
         # Générer la réponse
         outputs = generator(prompt, max_length=256, num_return_sequences=1, truncation=True)
 
         # Extraire uniquement la réponse après le prompt initial
-        generated_text = outputs[0]["generated_text"]
-        response = generated_text[len(prompt):].strip()
+        generated_text = outputs[0]["generated_text"].split("<|start_header_id|>assistant<|end_header_id|>")[-1].strip()
 
-        return {"message": request.message, "response": response}
+        return {"message": request.message, "response": generated_text}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
