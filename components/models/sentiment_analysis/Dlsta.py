@@ -1,78 +1,121 @@
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+from datasets import load_dataset
+from transformers import AutoTokenizer, AutoModelForSequenceClassification, TrainingArguments, Trainer
+from sklearn.metrics import classification_report, accuracy_score
 import numpy as np
-import tensorflow as tf
-
 
 class Dlsta:
-    def __init__(self):
-        self.model = None
+    def __init__(self, model_name="bert-base-uncased", num_labels=28, max_length=128):
+        """
+        Initialize the EmotionClassifier with a specific model and tokenizer.
 
-    ############################################################################
-    ############################# Train the model ##############################
-    ############################################################################
-    def train_model(self, sequences, y):
+        Args:
+            model_name (str): Hugging Face model name (e.g., 'bert-base-uncased').
+            num_labels (int): Number of emotion labels (default: 28 for GoEmotions).
+            max_length (int): Maximum token length for input text.
+        """
+        self.model_name = model_name
+        self.num_labels = num_labels
+        self.max_length = max_length
 
-        x = pad_sequences(sequences, padding="post")
-        x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.75, random_state=42)
-        print(len(x_train))
+        # Load tokenizer and model
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+        self.model = AutoModelForSequenceClassification.from_pretrained(self.model_name, num_labels=self.num_labels)
+
+    def load_data(self, dataset_name="go_emotions"):
+        """
+        Load the dataset from Hugging Face Datasets.
+
+        Args:
+            dataset_name (str): The name of the dataset to load.
+        """
+        self.dataset = load_dataset(dataset_name)
+
+    def preprocess(self):
+        """
+        Tokenize the dataset and prepare it for training.
+        """
+        def preprocess_function(examples):
+            return self.tokenizer(examples["text"], padding="max_length", truncation=True, max_length=self.max_length)
         
-        x_train = np.array(x_train)
-        self.model = tf.keras.Sequential([
-            tf.keras.layers.Embedding(input_dim=30000, output_dim=256),
-            tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64, return_sequences=True)),
-            tf.keras.layers.GlobalMaxPooling1D(),
-            tf.keras.layers.Dense(64, activation="relu"),
-            tf.keras.layers.Dense(128, activation="relu"),
-            tf.keras.layers.Dense(256, activation="relu"),
-            tf.keras.layers.Dropout(0.5),
-            tf.keras.layers.Dense(28, activation="sigmoid")  # Utilisation de sigmoid pour classification multi-étiquettes
-        ])
-        
-        self.model.compile(
-            loss="binary_crossentropy",  # Pour classification multi-étiquettes
-            optimizer="adam",
-            metrics=["accuracy"]
+        self.encoded_dataset = self.dataset.map(preprocess_function, batched=True)
+        self.train_dataset = self.encoded_dataset["train"]
+        self.validation_dataset = self.encoded_dataset["validation"]
+        self.test_dataset = self.encoded_dataset["test"]
+
+    def compute_metrics(self, pred):
+        """
+        Compute accuracy for evaluation.
+
+        Args:
+            pred: Predictions from the Trainer.
+
+        Returns:
+            dict: Accuracy metric.
+        """
+        predictions = np.argmax(pred.predictions, axis=1)
+        labels = pred.label_ids
+        accuracy = accuracy_score(labels, predictions)
+        return {"accuracy": accuracy}
+
+    def train(self, output_dir="./results", learning_rate=2e-5, batch_size=16, num_epochs=3):
+        """
+        Train the model using Hugging Face's Trainer.
+
+        Args:
+            output_dir (str): Directory to save training results.
+            learning_rate (float): Learning rate for optimization.
+            batch_size (int): Batch size for training and evaluation.
+            num_epochs (int): Number of training epochs.
+        """
+        training_args = TrainingArguments(
+            output_dir="./my_results",
+            num_train_epochs=5,
+            per_device_train_batch_size=32,
+            per_device_eval_batch_size=64,
+            warmup_steps=1000,
+            weight_decay=0.02,
+            learning_rate=3e-5
         )
 
-        self.model.fit(x_train, y_train, epochs=5, batch_size=28)
-        self.model.summary()
-        return x_test,y_test
+        self.trainer = Trainer(
+            model=self.model,
+            args=training_args,
+            train_dataset=self.train_dataset,
+            eval_dataset=self.validation_dataset,
+            tokenizer=self.tokenizer,
+            compute_metrics=self.compute_metrics,
+        )
 
-    ############################################################################
-    ############################# Test the model ##############################
-    ############################################################################
-    def test_model(self, y_test, x_test):
-        x_test = pad_sequences(x_test, padding="post")
-        return self.model.evaluate(x_test, y_test)
+        self.trainer.train()
 
-    ############################################################################
-    ############################ Predict the result ############################
-    ############################################################################
-    def predict(self, x_text):
-        x_text = pad_sequences(x_text, padding="post")
-        return self.model.predict(x_text)
+    def evaluate(self):
+        """
+        Evaluate the model on the test dataset.
 
-    ############################################################################
-    ############################ Analyze the texts  ############################
-    ############################################################################
-    def analyze_texts(self, x, labels):
-        predict = self.predict(x)
-        print(f"Émotion prédite : {labels[predict]}\n")
+        Returns:
+            dict: Evaluation results.
+        """
+        results = self.trainer.evaluate(self.test_dataset)
+        print("Evaluation Results:", results)
 
+        predictions = self.trainer.predict(self.test_dataset)
+        pred_labels = np.argmax(predictions.predictions, axis=1)
+        true_labels = self.test_dataset["labels"]
+        report = classification_report(true_labels, pred_labels, target_names=self.dataset["train"].features["labels"].names)
+        print("\nClassification Report:\n", report)
 
-    ############################################################################
-    ############################## Save bot ####################################
-    ############################################################################
-    def accuracy(self,y_predict,y_test):
-        print(f"La précision sur le jeu de test : {accuracy_score(y_test,y_predict) * 100:.2f}%")
-    
-    ############################################################################
-    ############################## Save bot ####################################
-    ############################################################################
-    def save_model(self):
-        self.model.save("./components/models/sentiment_analysis/dlsta_model")
+    def predict(self, text):
+        """
+        Predict the emotion of a given text.
 
-    def load_model(self):
-        self.model = tf.keras.models.load_model("./components/models/sentiment_analysis/dlsta_model")
+        Args:
+            text (str): The input text.
+
+        Returns:
+            str: The predicted emotion.
+        """
+        inputs = self.tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=self.max_length)
+        outputs = self.model(**inputs)
+        predicted_label = np.argmax(outputs.logits.detach().numpy())
+        emotion = self.dataset["train"].features["labels"].names[predicted_label]
+        return emotion
